@@ -1,36 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import TaskList from './components/TaskList';
+import useTaskManager from './components/useTaskManager';
+import './styles.css';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const { tasks, createTask, deleteTask, updateTask } = useTaskManager([]);
+
   const [newTask, setNewTask] = useState('');
 
   useEffect(() => {
-    const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    setTasks(savedTasks);
-  }, []);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
-  const completeTask = (taskName) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.name === taskName) {
-        return { ...task, state: 'Completada' };
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-  };
-
-  const addTask = () => {
-    if (newTask.trim() === '') {
-      return;
-    }
-    const taskToAdd = { name: newTask, state: 'Pendiente' };
-    const updatedTasks = [...tasks, taskToAdd];
-    setTasks(updatedTasks);
+  const handleAddTask = () => {
+    createTask(newTask);
     setNewTask('');
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
   return (
@@ -43,9 +28,9 @@ function App() {
           value={newTask}
           onChange={(e) => setNewTask(e.target.value)}
         />
-        <button onClick={addTask}>Agregar Tarea</button>
+        <button onClick={handleAddTask}>Agregar Tarea</button>
       </div>
-      <TaskList tasks={tasks} completeTask={completeTask} />
+      <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} />
     </div>
   );
 }

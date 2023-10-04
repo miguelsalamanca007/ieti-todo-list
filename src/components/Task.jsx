@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Task = ({ name, state }) => {
+const Task = ({ name, state, onDelete, onUpdate }) => {
   const [isChecked, setIsChecked] = useState(state === 'Completada');
 
   const toggleCheckbox = () => {
@@ -15,9 +15,11 @@ const Task = ({ name, state }) => {
           checked={isChecked}
           onChange={toggleCheckbox}
         />
-        <span className="task-name">{name} - </span>
+        <span className="task-name">{name}</span>
       </label>
       <span className="task-state">{isChecked ? 'Completada' : 'Pendiente'}</span>
+      <button onClick={() => onDelete(name)}>Eliminar</button>
+      <button onClick={() => onUpdate(name)}>Actualizar</button>
     </div>
   );
 };
